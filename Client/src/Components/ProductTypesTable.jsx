@@ -1,14 +1,14 @@
-import React,{useState,useEffect,useMemo} from 'react'
+import React,{useState,useEffect,useMemo,useCallback} from 'react'
 
 import { Table, Tag,Button,Typography,Popconfirm, Space,   } from 'antd';
 import { DeleteOutlined,EditOutlined } from '@ant-design/icons';
 
-import AddProductTypeModal from '../Components/AddProductTypeModal'
+import TableRowEditButtons from './TbaleRowEditButtons';
+import ProductTypeModal from './ProductTypeModal'
 
 import {getProductTypes} from '../Api/productTypes'
 
 const { Title } = Typography
-
 
 
 const columns = [
@@ -46,23 +46,6 @@ const columns = [
       </>
     ),
   },
-  {
-    title: 'Action',
-    dataIndex: 'Action',
-    width : 100,
-    render: (_, record) =>
-        <Space>
-          <Button type='text'>
-            <EditOutlined style={{ fontSize: '16px', color: '#08c',margin:0,padding:0 }}/>
-          </Button>
-
-          <Popconfirm title="Sure to delete?" onConfirm={() => alert("dd")}>
-          <Button danger type='text'>
-            <DeleteOutlined style={{ fontSize: '16px', color: '#c35',margin:0,padding:0 }}/>
-          </Button>
-        </Popconfirm>
-        </Space>  
-  },
 ];
 
 
@@ -70,17 +53,36 @@ const columns = [
 const App = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [productTypes, setProductTypes] = useState([]);
+  const [selectedProductType,SetSelectedProductType] = useState(undefined)
 
   const showModal = () => {
       setModalOpen(true);
+      SetSelectedProductType(undefined)
     };
+
   const onModalAdd = (productType)=>{
-    // console.log(productType);
-    setProductTypes([...productTypes,productType])
+    const prodIndex = productTypes.findIndex((prod)=>prod._id===productType._id)
+    if(prodIndex>0){
+      const nexArray = [...productTypes]
+      nexArray[prodIndex] = productType
+      setProductTypes([...nexArray])
+    }else{
+      setProductTypes([...productTypes,productType])
+    }
+  }
+
+  const onEditProductType =useCallback((productType)=>{
+    if(productType){
+      SetSelectedProductType(productTypes.find((prod)=>prod._id===productType.key))
+      setModalOpen(true);
+    }
+  },[productTypes])
+
+  const onDeleteProductType = (productType)=>{
+    console.log(productType);
   }
     useEffect(()=>{
       getProductTypes().then(({data})=>{
-        // console.log(data);
         setProductTypes(data)
       })
     },[])
@@ -98,10 +100,12 @@ const App = () => {
         )
       })
     },[productTypes])
+
+
   return (
     <>
     
-    <AddProductTypeModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd}/>
+    <ProductTypeModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd} productType={selectedProductType}/>
 
     <Table 
       pagination= {{position : ['bottomCenter']}}
@@ -114,7 +118,17 @@ const App = () => {
           <Button onClick={showModal} type="primary" >Add</Button>
         </div>
       )}
-      columns={columns} 
+      
+      columns={[
+        ...columns,,
+        {
+          title: 'Action',
+          dataIndex: 'Action',
+          width : 100,
+          render: (_, record) =>
+            <TableRowEditButtons record={record} onEditClicked={onEditProductType} onDeleteConfirmed={onDeleteProductType}/>
+        }]
+      } 
       dataSource={tableData} 
     />
     </>

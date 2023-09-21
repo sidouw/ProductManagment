@@ -14,9 +14,10 @@ router.post('/', async (req, res) => {
 });
 
 // Update an existing product type
-router.patch('/:id', async (req, res) => {
+router.patch('/', async (req, res) => {
+  console.log(req.body);
   try {
-    const updatedProductType = await ProductType.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedProductType = await ProductType.findByIdAndUpdate(req.body._id, req.body, {
       new: true,
     });
     res.json(updatedProductType);
