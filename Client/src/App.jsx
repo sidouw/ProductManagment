@@ -1,5 +1,12 @@
+import React from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+
+import {Outlet} from 'react-router-dom'
+
+import Box from '@mui/material/Box';
+
+import SideBar from './Components/SideBar'
 
 const darkTheme = createTheme({
   palette: {
@@ -7,11 +14,18 @@ const darkTheme = createTheme({
   },
 });
 
+
 function App() {
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <h1>Product Managment</h1>
+
+      <Box sx={{ display: 'flex' }}>
+        <SideBar/>
+        <Outlet/>
+      </Box>
+
     </ThemeProvider>
   );
 }
