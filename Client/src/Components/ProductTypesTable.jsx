@@ -1,7 +1,6 @@
 import React,{useState,useEffect,useMemo,useCallback} from 'react'
 
-import { Table, Tag,Button,Typography,Popconfirm, Space,   } from 'antd';
-import { DeleteOutlined,EditOutlined } from '@ant-design/icons';
+import { Table, Tag,Button,Typography} from 'antd';
 
 import TableRowEditButtons from './TbaleRowEditButtons';
 import ProductTypeModal from './ProductTypeModal'
@@ -61,8 +60,10 @@ const App = () => {
     };
 
   const onModalAdd = (productType)=>{
+    
     const prodIndex = productTypes.findIndex((prod)=>prod._id===productType._id)
-    if(prodIndex>0){
+    console.log(prodIndex);
+    if(prodIndex>=0){
       const nexArray = [...productTypes]
       nexArray[prodIndex] = productType
       setProductTypes([...nexArray])

@@ -38,4 +38,26 @@ router.get('/',async (req,res)=>{
         res.status(500).send({error})
     }
 })
+
+// Find all product types 
+router.get('/:id',async (req,res)=>{
+    try {
+        const productTypes = await ProductType.findById(req.params.id)
+                                              .populate('Attributes')
+                                              .populate({
+                                                        path: 'Attributes',
+                                                        model: 'Attribute',
+                                                          populate: [{
+                                                              path: 'AttributeValue',
+                                                              model: 'AttributeValue'
+                                                          }]
+                                                    })
+        if(! productTypes){
+            return  res.status(500).send({error:'Server Error'})
+        }
+        res.send(productTypes)
+    } catch (error) {
+        res.status(500).send({error})
+    }
+})
 module.exports = router;

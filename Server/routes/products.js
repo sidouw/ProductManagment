@@ -38,4 +38,17 @@ router.get('/',async (req,res)=>{
     }
 })
 
+// Find by id
+router.get('/:id',async (req,res)=>{
+    try {
+        const products =await Product.findById(req.params.id)
+        if(! products){
+            return  res.status(500).send({error:'Server Error'})
+        }
+        res.send(products)
+    } catch (error) {
+        res.status(500).send({error})
+    }
+})
+
 module.exports = router;

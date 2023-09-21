@@ -1,16 +1,12 @@
-import { Space, Table, Tag,Button,Typography,Popconfirm   } from 'antd';
-import { DeleteOutlined,EditOutlined } from '@ant-design/icons';
+import React,{useState,useEffect,useMemo,useCallback} from 'react'
+import {Table, Tag,Button,Typography} from 'antd';
+
+import TableRowEditButtons from './TbaleRowEditButtons';
+import ProductsModal from './ProductsModal'
+
+import {getProducts} from '../Api/products'
 const { Title } = Typography
 
-
-const TableHeader = ()=>{
-    return (
-        <div style={{ display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between' }}>
-            <Title  level={3} strong>Products</Title> 
-            <Button type="primary" >Add</Button>
-      </div>
-    )
-}
 
 const columns = [
   {
@@ -21,9 +17,9 @@ const columns = [
     render: (text) => <a>{text}</a>,
   },
   {
-    title: 'ProductType',
-    dataIndex: 'productType',
-    key: 'productType',
+    title: 'Product',
+    dataIndex: 'product',
+    key: 'product',
     width:100,
     // responsive: ['sm'],
   },
@@ -31,7 +27,6 @@ const columns = [
     title: 'Created',
     dataIndex: 'created',
     key: 'created',
-    fixed:'left',
     width:100,
   },
   {
@@ -52,23 +47,6 @@ const columns = [
       </>
     ),
   },
-  {
-    title: 'Action',
-    dataIndex: 'Action',
-    width : 100,
-    render: (_, record) =>
-        <Space>
-          <Button type='text'>
-            <EditOutlined style={{ fontSize: '22px', color: '#08c',margin:0,padding:0 }}/>
-          </Button>
-
-          <Popconfirm title="Sure to delete?" onConfirm={() => alert("dd")}>
-            <Button danger type='text'>
-              <DeleteOutlined style={{ fontSize: '22px', color: '#c35',margin:0,padding:0 }}/>
-            </Button>
-        </Popconfirm>
-        </Space>  
-  },
 ];
 
 const data = [
@@ -76,7 +54,7 @@ const data = [
     key: '1',
     name: 'John Brown',
     age: 32,
-    productType: 'New York No. 1 Lake Park',
+    product: 'New York No. 1 Lake Park',
     created: '2023-22-3',
     attributes: ['nice', 'developer'],
   },
@@ -84,7 +62,7 @@ const data = [
     key: '2',
     name: 'Jim Green',
     age: 42,
-    productType: 'London No. 1 Lake Park',
+    product: 'London No. 1 Lake Park',
     created: '2023-28-1',
     attributes: ['loser'],
   },
@@ -92,15 +70,64 @@ const data = [
     key: '3',
     name: 'Joe Black',
     age: 32,
-    productType: 'Sydney No. 1 Lake Park',
+    product: 'Sydney No. 1 Lake Park',
     created: '2023-25-2',
     attributes: ['cool', 'teacher'],
   },
 ];
 
 
-const App = () => <Table title={() => TableHeader()}
-                        columns={columns} 
+const App = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [selectedProduct,SetSelectedProduct] = useState(undefined)
+
+  useEffect(()=>{
+    getProducts().then(({data})=>{
+      setProducts(data)
+      console.log(data);
+    })
+  },[])
+
+  const showModal = () => {
+    setModalOpen(true);
+    SetSelectedProduct(undefined)
+  }
+
+  const onModalAdd = (product)=>{
+  }
+
+  const onEditProduct =useCallback((product)=>{
+    console.log("Edit");
+  },[])
+
+useCallback
+  const onDeleteProduct = (product)=>{
+    console.log(product);
+  }
+
+  return (
+    <>
+        <ProductsModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd} productType={undefined}/>
+        <Table  title={() => (
+                              <div style={{ display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between' }}>
+                                <Title  level={4} strong>Products</Title> 
+                                <Button onClick={showModal} type="primary" >Add</Button>
+                              </div>
+                            )}
+                columns={[
+                      ...columns,,
+                      {
+                        title: 'Action',
+                        dataIndex: 'Action',
+                        width : 100,
+                        render: (_, record) =>
+                          <TableRowEditButtons record={record} onEditClicked={onEditProduct} onDeleteConfirmed={onDeleteProduct}/>
+                      }]
+                      } 
                         dataSource={data} 
-                        />;
+          />
+    </>
+          )
+}
 export default App;

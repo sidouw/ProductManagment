@@ -59,5 +59,16 @@ router.get('/',async (req,res)=>{
         res.status(500).send({error})
     }
 })
+router.get('/populated',async (req,res)=>{
+    try {
+        const attributes =await Attribute.find().populate('AttributeValue')
+        if(! attributes){
+            return  res.status(500).send({error:'Server Error'})
+        }
+        res.send(attributes)
+    } catch (error) {
+        res.status(500).send({error})
+    }
+})
 
 module.exports = router;

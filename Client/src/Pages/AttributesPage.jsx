@@ -1,15 +1,11 @@
 import React,{useState} from 'react'
 
-import { Button, Layout, Menu, theme } from 'antd';
+import {Layout} from 'antd';
 const {Content} = Layout;
 
-import AddAttributeModal from '../Components/AddAttributeModal';
+import AttributesTable from '../Components/AttributesTable';
 
 const AttributesPage = ()=>{
-    const [modalOpen, setModalOpen] = useState(false);
-    const showModal = () => {
-        setModalOpen(true);
-      };
     return(
         <Content>
 
@@ -18,9 +14,7 @@ const AttributesPage = ()=>{
                         padding: 10,
                         height:'100%'
                 }}>
-                <AddAttributeModal open={modalOpen} setOpen ={setModalOpen} />
-                <Button onClick={showModal} type='primary' size='large'>Add </Button>
-
+                    <AttributesTable/>
                 </div>
         </Content>
     )
