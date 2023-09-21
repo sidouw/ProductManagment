@@ -1,33 +1,48 @@
 import React from 'react'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+
+
+import { Layout, Menu, theme } from 'antd';
+const { Header, Content, Footer, Sider } = Layout;
 
 import {Outlet} from 'react-router-dom'
 
-import Box from '@mui/material/Box';
-
-import SideBar from './Components/SideBar'
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+import SideBar from './Components/SideBar';
 
 
-function App() {
-
+const App = () => {
+  
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
+    <Layout   style={{
+        padding: 0,
+        height: '100vh',
+      }} >
 
-      <Box sx={{ display: 'flex' }}>
-        <SideBar/>
-        <Outlet/>
-      </Box>
 
-    </ThemeProvider>
+      <SideBar/>
+      <Layout>
+
+        <Header
+          style={{
+            padding: 0,
+            background: "colorBgContainer",
+          }}
+        />
+
+          <Outlet/>
+
+        <Footer
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Ant Design ©2023 Created by Ant UED
+        </Footer>
+      </Layout>
+    </Layout>
   );
-}
+};
 
 export default App;
+
+
+{/* <Outlet/> */}

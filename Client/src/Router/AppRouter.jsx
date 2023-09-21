@@ -5,6 +5,7 @@ import {Route,BrowserRouter,Routes} from 'react-router-dom'
 import App from '../App'
 import ProductTypesPage from '../Pages/ProductTypesPage';
 import ProductsPage from '../Pages/ProductsPage';
+import AttributesPage from '../Pages/AttributesPage';
 
 
 const AppRouter =()=>{
@@ -16,6 +17,7 @@ const AppRouter =()=>{
                 <Route path="/" element={<App/>}>
                         <Route path="/Products" element={<ProductsPage fallback={<div>Loading...</div>} />} />
                         <Route path="/ProductTypes" element={<ProductTypesPage/>} />
+                        <Route path="/Attributes" element={<AttributesPage/>} />
                         {/* {user.role<=2 && <Route path="/tickets/:id" element={<TicketViewPage/>} />} */}
                         <Route path="*" element={<NotFound/>} />
                     

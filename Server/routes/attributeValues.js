@@ -50,7 +50,6 @@ router.get('/:type',async (req,res)=>{
     if (!(isValid)) 
         return res.status(400).send({error:'Invalid attribute value type '})
 
-    console.log(valueType+ "************");
     const field =   ['text','select', 'multiselect'].includes(valueType) ? "Name" : 
                     valueType === 'boolean' ? 'Boolean' : 'Date'
 

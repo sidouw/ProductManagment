@@ -1,12 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const Attribute = require('../models/attribute');
-
+const AttributeValue = require('../models/attributeValue');
 
 // Create a new attribute
+const createAttributeValue = async (attribute)=>{
+  const field =   ['text','select', 'multiselect'].includes(attribute.Type) ? "Name" : 
+                  attribute.Type === 'boolean' ? 'Boolean' : 'Date'
+
+  const attributeValue = new AttributeValue({[field]:attribute.Value})
+  await attributeValue.save()
+  return attributeValue
+}
+
 router.post('/', async (req, res) => {
   try {
-    const attribute = new Attribute(req.body);
+    console.log(req.body);
+
+    const allowedTypes = ['text', 'boolean', 'date', 'select', 'multiselect']
+    const valueType =req.body.Type.toLowerCase()
+    const isValid = allowedTypes.includes(valueType)
+
+    if (!(isValid)) 
+        return res.status(400).send({error:'Invalid attribute value type '})
+
+    const attributeValue = await createAttributeValue(req.body)
+    const attribute = new Attribute({Name:req.body.Name,
+                                    Type:req.body.Type,
+                                    AttributeValue:attributeValue.id});
     await attribute.save();
     res.status(201).json(attribute);
   } catch (error) {
