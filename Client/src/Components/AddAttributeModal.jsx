@@ -1,6 +1,6 @@
 import React,{useState} from 'react'
 
-import { Modal,Form,Select, Input, Checkbox,DatePicker  } from 'antd';
+import { Modal,Form,Select, Input, Checkbox,DatePicker,message   } from 'antd';
 
 
 const { Option } = Select;
@@ -50,6 +50,7 @@ const AddAttributeModal = ({open,setOpen}) => {
  
   const [confirmLoading, setConfirmLoading] = useState(false);;
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleOk = () => {
     form
@@ -68,6 +69,7 @@ const AddAttributeModal = ({open,setOpen}) => {
   }
 
   const handleAddAttribute=(attribute)=>{
+
     addAttribute(attribute).then((data)=>{
         setOpen(false);
         setConfirmLoading(false);
@@ -76,8 +78,9 @@ const AddAttributeModal = ({open,setOpen}) => {
     }).catch((err)=>{
         setConfirmLoading(false);
         console.log(err);
-        alert(err.response.data.message)
+        messageApi.error(err.response.data.message)
     })
+
   }
   const handleCancel = () => {
     console.log('Clicked cancel button');
@@ -86,6 +89,7 @@ const AddAttributeModal = ({open,setOpen}) => {
 
   return (
     <>
+      {contextHolder}
       <Modal
         title="Create a new attribute"
         open={open}

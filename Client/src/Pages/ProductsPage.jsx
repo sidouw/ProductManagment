@@ -9,12 +9,6 @@ import ProductsTable from '../Components/ProductsTable'
 
 
 const ProductsPage = ()=>{
-    const clickk= ()=>{
-        console.log("cff");
-        // getAttributeValuesOfType("boolean").then(({data})=>{
-        //     console.log(data);
-        // })
-    }
     return(
         <Content>
             <div
@@ -24,8 +18,6 @@ const ProductsPage = ()=>{
             //   background: "red",
             }}>
                 <ProductsTable/>
-                <button onClick={clickk}>Clickkk</button>
-                content
             </div>
         </Content>
     )

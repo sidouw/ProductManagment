@@ -1,4 +1,4 @@
-import { Space, Table, Tag,Button,Typography,Popconfirm   } from 'antd';
+import { Table, Tag,Button,Typography,Popconfirm, Space,   } from 'antd';
 import { DeleteOutlined,EditOutlined } from '@ant-design/icons';
 const { Title } = Typography
 
@@ -6,7 +6,7 @@ const { Title } = Typography
 const TableHeader = ()=>{
     return (
         <div style={{ display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between' }}>
-            <Title  level={3} strong>Products</Title> 
+            <Title  level={3} strong>Product Types</Title> 
             <Button type="primary" >Add</Button>
       </div>
     )
@@ -17,15 +17,9 @@ const columns = [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
+    fixed:'left',
     width:100,
     render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'ProductType',
-    dataIndex: 'productType',
-    key: 'productType',
-    width:100,
-    // responsive: ['sm'],
   },
   {
     title: 'Created',
@@ -63,9 +57,9 @@ const columns = [
           </Button>
 
           <Popconfirm title="Sure to delete?" onConfirm={() => alert("dd")}>
-            <Button danger type='text'>
-              <DeleteOutlined style={{ fontSize: '22px', color: '#c35',margin:0,padding:0 }}/>
-            </Button>
+          <Button danger type='text'>
+            <DeleteOutlined style={{ fontSize: '22px', color: '#c35',margin:0,padding:0 }}/>
+          </Button>
         </Popconfirm>
         </Space>  
   },
@@ -75,26 +69,23 @@ const data = [
   {
     key: '1',
     name: 'John Brown',
-    age: 32,
+    created: '2023-21-9',
     productType: 'New York No. 1 Lake Park',
-    created: '2023-22-3',
     attributes: ['nice', 'developer'],
   },
   {
     key: '2',
     name: 'Jim Green',
-    age: 42,
+    created: '2023-21-7',
     productType: 'London No. 1 Lake Park',
-    created: '2023-28-1',
     attributes: ['loser'],
   },
   {
     key: '3',
     name: 'Joe Black',
-    age: 32,
+    created: '2023-22-9',
     productType: 'Sydney No. 1 Lake Park',
-    created: '2023-25-2',
-    attributes: ['cool', 'teacher'],
+    attributes: ['cool', 'teacher','cool', 'teacher','cool', 'teacher','cool', 'teacher','cool', 'teacher'],
   },
 ];
 
