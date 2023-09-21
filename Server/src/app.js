@@ -15,6 +15,18 @@ app.use(morgan('tiny'));
 
 app.use(express.urlencoded({ extended: true }));
 
+const productRoutes = require('../routes/products');
+const productTypeRoutes = require('../routes/productType');
+const attributeRoutes = require('../routes/attributes');
+const attributeValuesRoutes = require('../routes/attributeValues');
+
+
+app.use('/api/products', productRoutes);
+app.use('/api/productType', productTypeRoutes);
+app.use('/api/attributes', attributeRoutes);
+app.use('/api/attributeValues', attributeValuesRoutes);
+
+
 
 
 app.listen(process.env.PORT,()=>{

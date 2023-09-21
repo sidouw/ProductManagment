@@ -7,7 +7,8 @@ const attributeSchema = new Schema({
   },
   Type: {
     type: String,
-    enum: ['text', 'boolean', 'date', 'select', 'multiselect']
+    enum: ['text', 'boolean', 'date', 'select', 'multiselect'],
+    required: true
   },
   AttributeValue: {
     type: ObjectId,
