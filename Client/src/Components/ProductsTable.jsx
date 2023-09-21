@@ -58,7 +58,7 @@ const columns = [
     width : 100,
     render: (_, record) =>
         <Space>
-          <Button primary type='text'>
+          <Button type='text'>
             <EditOutlined style={{ fontSize: '22px', color: '#08c',margin:0,padding:0 }}/>
           </Button>
 

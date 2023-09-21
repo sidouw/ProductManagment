@@ -1,16 +1,16 @@
-import React from 'react'
+import React,{useState} from 'react'
 
 import { Layout, Menu, theme } from 'antd';
 const {Content} = Layout;
 
 import ProductTypesTable from '../Components/ProductTypesTable'
-const ProductTypesPage = ()=>{
 
+const ProductTypesPage = ()=>{
     return(
-        <Content>
+        <Content >
             <div
                 style={{
-                    padding: 24,
+                    padding: 10,
                     height:'100%',
                 //  background: colorBgContainer,
                 }}

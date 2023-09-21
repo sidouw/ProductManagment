@@ -28,7 +28,7 @@ router.patch('/:id', async (req, res) => {
 // Find all product types 
 router.get('/',async (req,res)=>{
     try {
-        const productTypes =await ProductType.find()
+        const productTypes = await ProductType.find().populate('Attributes')
         if(! productTypes){
             return  res.status(500).send({error:'Server Error'})
         }
