@@ -31,7 +31,7 @@ const columns = [
     title: 'Attributes',
     key: 'attributes',
     width: 100,
-    responsive: ['lg'],
+    // responsive: ['lg'],
     dataIndex: 'attributes',
     render: (_, { attributes }) => (
       <>
@@ -72,16 +72,16 @@ const App = () => {
     }
   }
 
-  const onEditProductType =useCallback((productType)=>{
-    if(productType){
-      SetSelectedProductType(productTypes.find((prod)=>prod._id===productType.key))
-      setModalOpen(true);
-    }
-  },[productTypes])
+    const onEditProductType =useCallback((productType)=>{
+      if(productType){
+        SetSelectedProductType(productTypes.find((prod)=>prod._id===productType.key))
+        setModalOpen(true);
+      }
+    },[productTypes])
 
-  const onDeleteProductType = (productType)=>{
-    console.log(productType);
-  }
+    const onDeleteProductType = (productType)=>{
+      console.log(productType);
+    }
     useEffect(()=>{
       getProductTypes().then(({data})=>{
         setProductTypes(data)

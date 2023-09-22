@@ -35,15 +35,12 @@ const AttributeValueInput =({ getFieldValue }) =>{
   const SelectedType=  productTypes.find((prodTy)=>prodTy._id===productTypeID)
 
   if(SelectedType){
-      
-    console.log("+++++++++++++++++++++++++++");
     const formFields = SelectedType.Attributes.reduce((acc, attr)=>{
       return {...acc,[attr.Name]: acc[attr.Name] ?  [...acc[attr.Name],{value:attr.AttributeValue,_id:attr._id,Type:attr.Type}]:
                                                     [{value:attr.AttributeValue,_id:attr._id,Type:attr.Type}]}
     },{})
     
     if(formFields){
-      console.log(formFields);
      return Object.keys(formFields).map((fieldName)=>{
         switch (formFields[fieldName][0].Type) {
           case 'select':
@@ -89,7 +86,6 @@ const AttributeValueInput =({ getFieldValue }) =>{
         .validateFields()
         .then((values) => {
           setConfirmLoading(true);
-          console.log(values);
           ApplyChanges(values)
         })
         .catch((info) => {
@@ -98,11 +94,17 @@ const AttributeValueInput =({ getFieldValue }) =>{
   }
   
   const ApplyChanges= (values) => {
+    if(values.Select) values.AssignedAttributes = [values.Select]
+    if(values.MultiSelect) values.AssignedAttributes = values.AssignedAttributes?  [...values?.MultiSelect,values.Select]:
+                                                      [...values.MultiSelect]
+    delete values['Select']
+    delete values['MultiSelect']
+    
     if(!product){
       addProduct(values).then((data)=>{
-        //   form.resetFields()
+          form.resetFields()
           setConfirmLoading(false);
-        //   setOpen(false)
+          setOpen(false)
           values._id = data.data._id
           handleAdded(values)
       }).catch((err)=>{

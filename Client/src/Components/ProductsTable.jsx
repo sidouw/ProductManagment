@@ -11,15 +11,15 @@ const { Title } = Typography
 const columns = [
   {
     title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'Name',
+    key: 'Name',
     width:100,
     render: (text) => <a>{text}</a>,
   },
   {
-    title: 'Product',
-    dataIndex: 'product',
-    key: 'product',
+    title: 'Product type',
+    dataIndex: 'ProductType',
+    key: 'ProductType',
     width:100,
     // responsive: ['sm'],
   },
@@ -106,16 +106,38 @@ useCallback
     console.log(product);
   }
 
+  const tableData= useMemo(()=>{
+    return products.map((prod)=>{
+      // console.log(prod);
+      const attributes = prod.AssignedAttributes.map((assignedAttr)=>assignedAttr.AttributeValue.Name)
+      console.log(attributes);
+      return (
+        {
+          key: prod._id,
+          Name: prod.Name,
+          created: prod.createdAt.substr(0, 10),
+          ProductType:prod.ProductType.Name,
+          attributes
+        }
+      )
+    })
+  },[products])
+
   return (
     <>
         <ProductsModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd} productType={undefined}/>
-        <Table  title={() => (
+        <Table  
+              pagination= {{position : ['bottomCenter']}}
+              style={{ height: '72vh'}}
+              loading= {false}
+              scroll={{ y: 350 }}
+              title={() => (
                               <div style={{ display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between' }}>
                                 <Title  level={4} strong>Products</Title> 
                                 <Button onClick={showModal} type="primary" >Add</Button>
                               </div>
                             )}
-                columns={[
+              columns={[
                       ...columns,,
                       {
                         title: 'Action',
@@ -125,7 +147,7 @@ useCallback
                           <TableRowEditButtons record={record} onEditClicked={onEditProduct} onDeleteConfirmed={onDeleteProduct}/>
                       }]
                       } 
-                        dataSource={data} 
+                        dataSource={tableData} 
           />
     </>
           )

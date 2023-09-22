@@ -29,14 +29,6 @@ const App = () => {
         />
 
           <Outlet/>
-
-        <Footer
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Ant Design ©2023 Created by Ant UED
-        </Footer>
       </Layout>
     </Layout>
   );
