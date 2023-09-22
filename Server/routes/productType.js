@@ -15,7 +15,6 @@ router.post('/', async (req, res) => {
 
 // Update an existing product type
 router.patch('/', async (req, res) => {
-  console.log(req.body);
   try {
     const updatedProductType = await ProductType.findByIdAndUpdate(req.body._id, req.body, {
       new: true,

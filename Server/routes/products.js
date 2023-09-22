@@ -15,14 +15,24 @@ const createAssignedAttributes = async (attrValues)=>{
 // Create a new product
 router.post('/', async (req, res) => {
   try {
-    const assignedAttributes = await createAssignedAttributes(req.body.AssignedAttributes)
-    console.log(assignedAttributes);
-    const product = new Product({Name:req.body.Name,
-                                ProductType:req.body.ProductType,
-                                AssignedAttributes:assignedAttributes
-                              });
-    await product.save();
-    res.status(201).json(product);
+    if(req.body.AssignedAttributes){
+      const assignedAttributes = await createAssignedAttributes(req.body.AssignedAttributes)
+    
+      const product = new Product({Name:req.body.Name,
+                                    ProductType:req.body.ProductType,
+                                    AssignedAttributes:assignedAttributes
+                                  })
+      await product.save();
+      res.status(201).json(product)
+    }else{
+        const product = new Product({Name:req.body.Name,
+          ProductType:req.body.ProductType
+        })
+        await product.save();
+        res.status(201).json(product);
+    }
+    
+    
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

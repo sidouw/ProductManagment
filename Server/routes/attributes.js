@@ -15,8 +15,6 @@ const createAttributeValue = async (attribute)=>{
 
 router.post('/', async (req, res) => {
   try {
-    console.log(req.body);
-
     const allowedTypes = ['text', 'boolean', 'date', 'select', 'multiselect']
     const valueType =req.body.Type.toLowerCase()
     const isValid = allowedTypes.includes(valueType)

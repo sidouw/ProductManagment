@@ -85,7 +85,6 @@ const App = () => {
   useEffect(()=>{
     getProducts().then(({data})=>{
       setProducts(data)
-      console.log(data);
     })
   },[])
 
@@ -103,14 +102,12 @@ const App = () => {
 
 useCallback
   const onDeleteProduct = (product)=>{
-    console.log(product);
+
   }
 
   const tableData= useMemo(()=>{
     return products.map((prod)=>{
-      // console.log(prod);
-      const attributes = prod.AssignedAttributes.map((assignedAttr)=>assignedAttr.AttributeValue.Name)
-      console.log(attributes);
+      const attributes = prod?.AssignedAttributes.map((assignedAttr)=>assignedAttr.AttributeValue.Name)
       return (
         {
           key: prod._id,

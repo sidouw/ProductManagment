@@ -90,10 +90,11 @@ const AttributeValueInput =({ getFieldValue }) =>{
         })
         .catch((info) => {
           console.log('Validate Failed:', info)
-        });
+        })
   }
   
   const ApplyChanges= (values) => {
+
     if(values.Select) values.AssignedAttributes = [values.Select]
     if(values.MultiSelect) values.AssignedAttributes = values.AssignedAttributes?  [...values?.MultiSelect,values.Select]:
                                                       [...values.MultiSelect]
@@ -106,7 +107,7 @@ const AttributeValueInput =({ getFieldValue }) =>{
           setConfirmLoading(false);
           setOpen(false)
           values._id = data.data._id
-          handleAdded(values)
+          handleAdded(data.data)
       }).catch((err)=>{
           setConfirmLoading(false);
           console.log(err);
@@ -128,19 +129,11 @@ const AttributeValueInput =({ getFieldValue }) =>{
   }
 
   const initialValues = ()=>{
-    // if (product)
-    //     return {
-    //         Name:product.Name,
-    //         Attributes:product.Attributes.map((attr)=>attr._id)
-    //       }
     return {}
   }
   
   const handleAdded = (values)=>{
-    // const date = new Date(Date.now()).toISOString()
-    // const nAttributes = attributes.filter((attr)=>values.Attributes.includes(attr._id))
-    // // console.log({Name:values.Name,Attributes:nAttributes,createdAt:date});
-    // onAdded &&onAdded({_id:values._id,Name:values.Name,Attributes:nAttributes,createdAt:date})
+
   }
 
   const handleCancel = () => {
