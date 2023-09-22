@@ -40,9 +40,9 @@ router.get('/',async (req,res)=>{
 })
 
 // Find all product types 
-router.get('/:id',async (req,res)=>{
+router.get('/populated',async (req,res)=>{
     try {
-        const productTypes = await ProductType.findById(req.params.id)
+        const productTypes = await ProductType.find()
                                               .populate('Attributes')
                                               .populate({
                                                         path: 'Attributes',

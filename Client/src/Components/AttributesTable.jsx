@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useMemo,useCallback} from 'react'
-import {Table, Tag,Button,Typography} from 'antd';
+import {Table, Tag,Button,Typography,message} from 'antd';
 
 import TableRowEditButtons from './TbaleRowEditButtons';
 import AttributeModal from './AttributeModal'
@@ -34,6 +34,7 @@ const columns = [
 
 
 const App = () => {
+const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
   const [attributes, setAttributes] = useState([]);
   const [selectedAttribute,SetSelectedAttribute] = useState(undefined)
@@ -41,7 +42,6 @@ const App = () => {
   useEffect(()=>{
     getAttributesPopulated().then(({data})=>{
         setAttributes(data)
-        // console.log(data);
     })
   },[])
 
@@ -50,7 +50,7 @@ const tableData = useMemo(()=>{
     
     return attributes.map((attr)=>{
         let value = ''
-        if(attr.Type === 'boolean') value = attr.AttributeValue?.Boolean.toString()
+        if(attr.Type === 'boolean') value = attr.AttributeValue?.Boolean?.toString()
         if(['text','select', 'multiselect'].includes(attr.Type)) value = attr.AttributeValue?.Name
         if(attr.Type === 'date') value = attr.AttributeValue.Date.substr(0, 10)
         return{
@@ -67,22 +67,37 @@ const tableData = useMemo(()=>{
     SetSelectedAttribute(undefined)
   }
 
-  const onModalAdd = (aAttribute)=>{
+
+  const onModalAdd = (attribute)=>{
+    const prodIndex = attributes.findIndex((attr)=>attr._id===attribute._id)
+    if(prodIndex>=0){
+      const nexArray = [...attributes]
+      nexArray[prodIndex] = attribute
+      setAttributes([...nexArray])
+    }else{
+        setAttributes([...attributes,attribute])
+    }
   }
 
-  const onEditAttribute =useCallback((aAttribute)=>{
-    console.log("Edit");
-  },[])
+  const onEditAttribute =useCallback((attribute)=>{
+    messageApi.warning("Not Implemented")
+  },[attributes])
 
-useCallback
+
   const onDeleteAttribute = (aAttribute)=>{
     console.log(aAttribute);
   }
 
   return (
     <>
-        <AttributeModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd} aAttributeType={undefined}/>
-        <Table  title={() => (
+        {contextHolder}
+        <AttributeModal open={modalOpen} setOpen={setModalOpen} onAdded={onModalAdd} attribute={undefined}/>
+        <Table  
+                pagination= {{position : ['bottomCenter']}}
+                style={{ height: '72vh'}}
+                loading= {false}
+                scroll={{ y: 350 }}
+                title={() => (
                               <div style={{ display: 'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between' }}>
                                 <Title  level={4} strong>Attributes</Title> 
                                 <Button onClick={showModal} type="primary" >Add</Button>

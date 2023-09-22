@@ -1,16 +1,16 @@
 import React,{useState,useEffect} from 'react'
 
-import { Modal,Form,Select, Input, Checkbox,DatePicker,message   } from 'antd';
+import { Modal,Form,Select, Input,message} from 'antd';
 
 
 const { Option } = Select;
 
-import {getProductTypes} from '../Api/productTypes'
+import {getProductTypesPopulated} from '../Api/productTypes'
 import {addProduct,updateProduct} from '../Api/products'
 
 
 const AddProductModal = ({open,setOpen,onAdded,product}) => {
- 
+  
   const [confirmLoading, setConfirmLoading] = useState(false);;
   const [productTypes, setProductTypes] = useState(undefined);;
   const [form] = Form.useForm();
@@ -18,7 +18,7 @@ const AddProductModal = ({open,setOpen,onAdded,product}) => {
 
   
   useEffect(()=>{
-    getProductTypes().then(data=>{
+    getProductTypesPopulated().then(data=>{
         setProductTypes(data.data)
     })
   },[])
@@ -27,11 +27,68 @@ const AddProductModal = ({open,setOpen,onAdded,product}) => {
     form.resetFields()
   },[product])
 
+
+const AttributeValueInput =({ getFieldValue }) =>{
+  if(!productTypes) return
+  const rules=[{ required: true, message:'Please input an attribute value!' }]
+  const productTypeID = getFieldValue('ProductType')
+  const SelectedType=  productTypes.find((prodTy)=>prodTy._id===productTypeID)
+
+  if(SelectedType){
+      
+    console.log("+++++++++++++++++++++++++++");
+    const formFields = SelectedType.Attributes.reduce((acc, attr)=>{
+      return {...acc,[attr.Name]: acc[attr.Name] ?  [...acc[attr.Name],{value:attr.AttributeValue,_id:attr._id,Type:attr.Type}]:
+                                                    [{value:attr.AttributeValue,_id:attr._id,Type:attr.Type}]}
+    },{})
+    
+    if(formFields){
+      console.log(formFields);
+     return Object.keys(formFields).map((fieldName)=>{
+        switch (formFields[fieldName][0].Type) {
+          case 'select':
+              return (
+                  <Form.Item key={formFields[fieldName][0]._id} name="Select" label={fieldName} rules={rules}>
+                      <Select
+                        style={{ width: '100%' }}
+                        placeholder={"Please select a "+ fieldName }
+                      >
+                        {
+                          formFields[fieldName].map((attrVal,index)=>
+                          <Option key={attrVal.value._id} value={attrVal.value._id}>{attrVal.value.Name}</Option> )
+                        }
+                      </Select>
+                  </Form.Item>
+              )
+          case 'multiselect':
+            return (
+                <Form.Item key={formFields[fieldName][0]._id} name="MultiSelect" label={fieldName} rules={rules}>
+                    <Select
+                      mode="multiple"
+                      allowClear              
+                      style={{ width: '100%' }}
+                      placeholder={"Please select a "+ fieldName }
+                    >
+                      {
+                        formFields[fieldName].map((attrVal,index)=>
+                        <Option key={attrVal.value._id} value={attrVal.value._id}>{attrVal.value.Name}</Option> )
+                      }
+                    </Select>
+                </Form.Item>
+          )
+          default:
+              return null
+      }
+      })
+    }
+  }
+}
+
   const handleOk = () => {
     form
         .validateFields()
         .then((values) => {
-        //   setConfirmLoading(true);
+          setConfirmLoading(true);
           console.log(values);
           ApplyChanges(values)
         })
@@ -67,6 +124,7 @@ const AddProductModal = ({open,setOpen,onAdded,product}) => {
       })
     }
   }
+
   const initialValues = ()=>{
     // if (product)
     //     return {
@@ -133,6 +191,12 @@ const AddProductModal = ({open,setOpen,onAdded,product}) => {
                   }
               </Select>
           </Form.Item>}
+
+          <Form.Item
+            noStyle
+            shouldUpdate={(prevValues, currentValues) => prevValues.ProductType !== currentValues.ProductType}>
+                {AttributeValueInput}
+          </Form.Item>
 
       </Form>
       </Modal>

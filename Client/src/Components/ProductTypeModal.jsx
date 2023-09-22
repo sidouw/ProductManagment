@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect,useMemo} from 'react'
 
 import { Modal,Form,Select, Input, Checkbox,DatePicker,message   } from 'antd';
 
@@ -15,13 +15,20 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
   const [attributes, setAttributes] = useState(undefined);;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
-
   
   useEffect(()=>{
     getAttributes().then(data=>{
       setAttributes(data.data)
     })
   },[])
+
+  const groupedAttributes = useMemo(()=>{
+    if(!attributes) return []
+    const maped=  attributes.map(attr=>{
+     return  attr.Name
+    })
+   return maped.filter((item,index) => maped.indexOf(item) === index)
+  },[attributes])
 
   useEffect(()=>{
     form.resetFields()
@@ -32,7 +39,6 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
         .validateFields()
         .then((values) => {
           setConfirmLoading(true);
-          console.log(productType);
           ApplyChanges(values)
         })
         .catch((info) => {
@@ -41,6 +47,7 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
   }
   
   const ApplyChanges= (values) => {
+    values.Attributes = attributes.filter(attr=>values.Attributes.includes(attr.Name)).map(attr=>attr._id)
     if(!productType){
       addProductType(values).then((data)=>{
           form.resetFields()
@@ -50,7 +57,7 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
           handleAdded(values)
       }).catch((err)=>{
           setConfirmLoading(false);
-          console.log(err);
+          console.log(err)
           messageApi.error(err.response.data.message)
       })
     }else{
@@ -69,17 +76,20 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
   }
   const initialValues = ()=>{
     if (productType)
+      {
+        const attributes = productType.Attributes.map((attr)=>attr.Name) 
+        // attributes.filter((item,index) => attributes.indexOf(item) === index)
         return {
             Name:productType.Name,
-            Attributes:productType.Attributes.map((attr)=>attr._id)
-          }
+            Attributes:attributes.filter((item,index) => attributes.indexOf(item) === index)
+      }
     return {}
   }
+}
   
   const handleAdded = (values)=>{
     const date = new Date(Date.now()).toISOString()
     const nAttributes = attributes.filter((attr)=>values.Attributes.includes(attr._id))
-    // console.log({Name:values.Name,Attributes:nAttributes,createdAt:date});
     onAdded &&onAdded({_id:values._id,Name:values.Name,Attributes:nAttributes,createdAt:date})
   }
 
@@ -130,8 +140,8 @@ const AddAttributeModal = ({open,setOpen,onAdded,productType}) => {
                   allowClear
                   placeholder="Attributes">
                   {
-                    attributes.map((attr,index)=>
-                    <Option key={attr._id} value={attr._id}>{attr.Name}</Option> )
+                    groupedAttributes.map((attr,index)=>
+                    <Option key={attr} value={attr}>{attr}</Option> )
                   }
               </Select>
           </Form.Item>}

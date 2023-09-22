@@ -59,6 +59,7 @@ router.get('/',async (req,res)=>{
         res.status(500).send({error})
     }
 })
+
 router.get('/populated',async (req,res)=>{
     try {
         const attributes =await Attribute.find().populate('AttributeValue')

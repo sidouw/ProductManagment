@@ -96,7 +96,7 @@ const App = () => {
             key: prodType._id,
             name: prodType.Name,
             created: prodType.createdAt.substr(0, 10),
-            attributes,
+            attributes: attributes.filter((item,index) => attributes.indexOf(item) === index),
           }
         )
       })

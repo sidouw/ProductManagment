@@ -1,11 +1,11 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 
 import { Modal,Form,Select, Input, Checkbox,DatePicker,message   } from 'antd';
 
 
 const { Option } = Select;
 
-import {addAttribute} from '../Api/attributes'
+import {addAttribute,updateAttribute} from '../Api/attributes'
 
 const AttributeValueInput =({ getFieldValue }) =>{
     const rules=[{ required: true, message:'Please input an attribute value!' }]
@@ -38,7 +38,7 @@ const AttributeValueInput =({ getFieldValue }) =>{
         case 'boolean':
             return (
                 <Form.Item name="Value" label="Boolean" valuePropName="checked" >
-                    <Checkbox />
+                    <Checkbox/>
                 </Form.Item>
             )
         default:
@@ -46,42 +46,80 @@ const AttributeValueInput =({ getFieldValue }) =>{
     }
 }
 
-const AddAttributeModal = ({open,setOpen}) => {
+const AddAttributeModal = ({open,setOpen,attribute,onAdded}) => {
  
   const [confirmLoading, setConfirmLoading] = useState(false);;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(()=>{
+    form.resetFields()
+  },[attribute])
 
   const handleOk = () => {
     form
         .validateFields()
         .then((values) => {
         form.resetFields();
-        console.log(values);
         setConfirmLoading(true);
-
-        handleAddAttribute(values)
-
+        ApplyChanges(values)
         })
         .catch((info) => {
         console.log('Validate Failed:', info);
         });
   }
 
-  const handleAddAttribute=(attribute)=>{
-
-    addAttribute(attribute).then((data)=>{
+  const ApplyChanges=(values)=>{
+    if(!attribute){
+    addAttribute(values).then((data)=>{
         setOpen(false);
         setConfirmLoading(false);
+        values._id = data.data._id
+        handleAdded(values)
         form.resetFields()
-        console.log(data);
     }).catch((err)=>{
         setConfirmLoading(false);
         console.log(err);
         messageApi.error(err.response.data.message)
     })
+    }else{
+      updateAttribute({...values,_id:attribute._id}).then(()=>{
+        form.resetFields()
+        setConfirmLoading(false);
+        setOpen(false)
+        values._id = attribute._id
+        handleAdded(values)
+    }).catch((err)=>{
+        setConfirmLoading(false);
+        console.log(err);
+        messageApi.error(err.response.data.message)
+    })
+    }
 
   }
+
+  
+  const initialValues = ()=>{
+
+    return {}
+  }
+  
+  const handleAdded = (values)=>{
+    let value = ''
+    if(values.Type === 'boolean')
+      {   value = "Boolean" 
+          values.Value ? values.Value = true:values.Value=false
+      }
+    if(['text','select', 'multiselect'].includes(values.Type)) value = "Name"
+    if(values.Type === 'date')
+      { 
+        value = "Date"
+        values.Value = values.Value.toISOString()
+      }
+    const AttributeValue = {[value]:values.Value}
+    onAdded &&onAdded({_id:values._id,Name:values.Name,Type:values.Type,AttributeValue})
+  }
+
   const handleCancel = () => {
     console.log('Clicked cancel button');
     setOpen(false);
@@ -101,9 +139,7 @@ const AddAttributeModal = ({open,setOpen}) => {
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{
-          Type:'text'
-        }}
+        initialValues={initialValues()}
       >
         <Form.Item
           name="Name"
